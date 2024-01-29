@@ -1,0 +1,39 @@
+{% extends "app_mascotas/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<div class="container">
+    <ul class="collection">
+            {% for message in messages %}
+                <a href="{% url 'conversation' message.user.username message.det_prestacion %}">
+                    <li class="collection-item avatar">
+                        {% if message.user.imagen %}
+                            <img src="{{ message.user.imagen.url }}" class="circle responsive-img">
+                        {% else %}
+                            <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                        {% endif %}
+                        <span class="title">{{ message.user.first_name }} {{ message.user.last_name }}</span>
+                        <p><b>@{{ message.user.username }} {{ message.det_prestacion}}</b></p>
+                        <span class="new badge">{{ message.unread }}</span>
+                    </li>
+                </a>
+        
+        
+        {% empty %}
+            <div class="center-align">
+                <br><br><br><br><br>
+                <i class="material-icons large">inbox</i>
+                <h3>Sin mensajes</h3>
+                <h5>Tu inbox está vacío</h5>
+                <br><br><br><br><br>
+            </div>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+{% endblock %}

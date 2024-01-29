@@ -1,0 +1,32 @@
+{% extends 'app_mascotas/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+
+  <!------>
+
+  <div class="cont1">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            
+        </div>
+        <div class="col-sm-4">
+            <h2>Cambio de contraseña completado!</h2>
+            <br>
+            <h3>Su contraseña ha sido establecida. Puede continuar e iniciar sesión ahora</h3>
+            <br>
+            <br><a class="btn" href="{% url 'login_custom' %}">Ir a Iniciar sesión</a>
+            
+        </div>
+        <div class="col-sm-4">
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock content %}

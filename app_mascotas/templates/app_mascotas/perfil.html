@@ -1,0 +1,460 @@
+{% extends "app_mascotas/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Perfil del Usuario{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    {% for msg in messages %}
+       <script>
+           Swal.fire({
+               title: 'Exito!',
+               text: '{{msg}}',
+               icon: 'success',
+               confirmButtonText: 'Aceptar',
+               confirmButtonColor: 'Green'
+           });
+       </script>
+    {% endfor %}
+{% endif %}
+
+<script>
+    function eliminarServicio(id_servicio) {
+        Swal.fire({
+            title: 'Alerta',
+            text: 'Está a punto de eliminar un servicio publicado',
+            icon: 'warning',
+            confirmButtonText: 'Continuar',
+            confirmButtonColor: 'Red',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar'
+        }).then(function(resp) {
+            if (resp.isConfirmed) {
+                // Realizar una solicitud AJAX al servidor para eliminar el registro
+                $.ajax({
+                    url: "/eliminar_servicio/" + id_servicio,
+                    method: "POST", // O "DELETE" si prefieres utilizar el método DELETE
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        // Eliminar la fila de la tabla HTML
+                        $('#servicio-' + id_servicio).remove();
+                        // Mostrar un mensaje de éxito
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Servicio eliminado con éxito',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonColor: 'Green'
+                        }).then(function() {
+                            // Redirigir a la página de gestión de tareas
+                            window.location.href = "{% url 'perfil' %}";
+                        });
+                    },
+                    error: function(data) {
+                        // Manejar errores si es necesario
+                        console.error('Error al eliminar el servicio');
+                    }
+                });
+            }
+        });
+    }
+    </script>
+
+    <script>
+        function eliminarMascota(id_mascota) {
+            Swal.fire({
+                title: 'Alerta',
+                text: 'Está a punto de eliminar una mascota',
+                icon: 'warning',
+                confirmButtonText: 'Continuar',
+                confirmButtonColor: 'Red',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar'
+            }).then(function(resp) {
+                if (resp.isConfirmed) {
+                    // Realizar una solicitud AJAX al servidor para eliminar el registro
+                    $.ajax({
+                        url: "/eliminar_mascota/" + id_mascota,
+                        method: "POST", // O "DELETE" si prefieres utilizar el método DELETE
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(data) {
+                            // Eliminar la fila de la tabla HTML
+                            $('#mascota-' + id_mascota).remove();
+                            // Mostrar un mensaje de éxito
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: 'Mascota eliminada con éxito',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonColor: 'Green'
+                            }).then(function() {
+                                // Redirigir a la página de gestión de tareas
+                                window.location.href = "{% url 'perfil' %}";
+                            });
+                        },
+                        error: function(data) {
+                            // Manejar errores si es necesario
+                            console.error('Error al eliminar la mascota');
+                        }
+                    });
+                }
+            });
+        }
+        </script>
+
+<div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+            <div class="col-xl-8 col-md-12">
+                <div class="card user-card-full">
+                    <div class="row m-l-0 m-r-0">
+                        <div class="col-sm-4 bg-c-lite-green user-profile">
+                            <div class="card-block text-center text-white">
+                                <div class="m-b-25">
+                                    {% if data.imagen %}
+                                        <img src="{{ data.imagen.url }}" class="circle responsive-img" alt="User-Profile-Image">
+                                    {% else %}
+                                        <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="img-radius" alt="User-Profile-Image">
+                                    {% endif %}
+                                </div>
+                                <h6 class="f-w-600">{{ data.first_name }} {{ data.last_name }}</h6>
+                                {% if user.es_cuidador %}
+                                <p>{{ cuidador_data.especializacion}}</p>
+                                {% endif %}
+                                {% if not user.es_cuidador and not user.is_staff %}
+                                <p>Usuario Normal</p>
+                                {% endif %}
+                                {% if user.is_staff %}
+                                <p>Administrador</p>
+                                {% endif %}
+                                <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+
+                                {% if cuidador_data %}
+                                <!-- Agrega esto en tu plantilla donde desees mostrar la disponibilidad y el botón para cambiarla -->
+                                <form method="post" action="{% url 'perfil' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cambiar_disponibilidad" value="1">
+                                    <br>
+                                    <p class="m-b-10 f-w-600">{{ cuidador_data.disponibilidad }}</p>
+                                    <button type="submit" class="btn btn-primary">Cambiar</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card-block">
+                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Información</h6>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Nombre de usuario</p>
+                                        <h6 class="text-muted f-w-400">{{ data.username }}</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Email</p>
+                                        <h6 class="text-muted f-w-400">{{ data.email }}</h6>
+                                    </div>
+                                </div>
+                                <!-- Agrega más información según tus necesidades -->
+                                <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Datos adicionales</h6>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Dirección</p>
+                                        <h6 class="text-muted f-w-400">{{data.direccion}}</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Número Teléfonico</p>
+                                        <h6 class="text-muted f-w-400">{{data.telefono}}</h6>
+                                    </div>
+                                    {% if cuidador_data.experiencia %}
+                                    <div class="col-sm-12">
+                                        <p class="m-b-10 f-w-600">Experiencia</p>
+                                        <h6 class="text-muted f-w-400">{{cuidador_data.experiencia}}</h6>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <!-- Puedes personalizar esto según tus necesidades -->
+                                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'><i class="material-icons right">edit</i>Acciones</a>
+
+                                <!-- Dropdown Structure -->
+                                <ul id='dropdown2' class='dropdown-content'>
+                                    <li><a href="{% url 'editar_perfil' data.id %}">Editar datos de usuario</a></li>
+                                    <li><a href="{% url 'password_change' %}">Cambiar contraseña</a></li>
+                                    {% if cuidador_data %}
+                                    <li><a href="{% url 'editar_cuidador' id_cuidador=cuidador_data.id_cuidador %}">Editar datos de cuidador</a></li>
+                                    {% endif %}
+                                </ul>
+                                <hr>
+                                {% if user.is_superuser %}
+                                <a class='dropdown-trigger btn' href='#' data-target='dropdown3'><i class="material-icons right">lock</i>Admin</a>
+                                <ul id='dropdown3' class='dropdown-content'>                              
+                                    <li><a href="{% url "raza" %}">Agregar especie y raza de la mascotas</a></li>
+                                    <li><a href="{% url "tipo_servicio" %}">Agregar tipo de servicios</a></li>
+                                {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-primary" data-toggle="modal" data-target="#agregarMascotaModal">
+                    Agregar Mascota <i class="fas fa-plus"></i>
+                </a>                
+            </div>
+        </div>
+    </div>
+
+    {% if mascotas_activas %}
+    <h2>Mis Mascotas</h2>
+    <div class="row justify-content-center">
+        {% for mascota in mascotas_activas %}
+            <div class="col-md-4">
+                <div class="card d-flex">
+                    <div class="ml-auto mt-2">
+                        <form method="post" action="{% url 'desactivar_mascota' mascota.id_mascota %}">
+                            {% csrf_token %}
+                            <button class='btn' type="submit"><i class="fas fa-toggle-off"></i>
+                            </button>
+                        </form>
+                        <a class="btn" href="{% url "modificar_mascota" mascota.id_mascota %}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Agrega un espacio para la foto de la mascota -->
+                        <img src="{% static 'app_mascotas/img/no_pet.png' %}" class="img-fluid rounded" style="max-height: 150px;" alt="Foto de la Mascota por Defecto">
+                        
+                        <h5 class="card-title">{{ mascota.nombre_mascota }}</h5>
+                        <p class="card-text"><strong>Raza:</strong> {{ mascota.id_raza }}</p>
+                        <p class="card-text"><strong>Peso:</strong> {{ mascota.peso }}</p>
+                        <p class="card-text"><strong>Pelaje:</strong> {{ mascota.pelaje }}</p>
+                        <p class="card-text"><strong>Observaciones:</strong> {{ mascota.observaciones }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if mascotas_desactivadas %}
+    <h2>Mis Mascotas desactivadas</h2>
+    <div class="row justify-content-center">
+        {% for mascota in mascotas_desactivadas %}
+            <div class="col-md-4">
+                <div class="card d-flex">
+                    <div class="ml-auto mt-2">
+                        <form method="post" action="{% url 'activar_mascota' mascota.id_mascota %}">
+                            {% csrf_token %}
+                            <button class='btn' type="submit"><i class="fas fa-toggle-on"></i></button>
+                        </form>
+                        <a class="btn" href="{% url "modificar_mascota" mascota.id_mascota %}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Agrega un espacio para la foto de la mascota -->
+                        {% if mascota.imagen %}
+                            <img src="{{ mascota.imagen.url }}" class="img-fluid rounded" style="max-height: 150px;" alt="Foto de la Mascota">
+                        {% else %}
+                            <img src="{% static 'app_mascotas/img/no_pet.png' %}" class="img-fluid rounded" style="max-height: 150px;" alt="Foto de la Mascota por Defecto">
+                        {% endif %}
+                        
+                        <h5 class="card-title">{{ mascota.nombre_mascota }}</h5>
+                        <p class="card-text"><strong>Raza:</strong> {{ mascota.id_raza }}</p>
+                        <p class="card-text"><strong>Peso:</strong> {{ mascota.peso }}</p>
+                        <p class="card-text"><strong>Pelaje:</strong> {{ mascota.pelaje }}</p>
+                        <p class="card-text"><strong>Observaciones:</strong> {{ mascota.observaciones }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+{% if cuidador_data and servicios_activos %}
+    <div class="col-md-12">
+        <h2 class="text-center">Servicios Publicados:</h2>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for servicio in servicios_activos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title">{{ servicio.tipo_servicio }}</h5>
+                                <div class="btn-group">
+                                    <form method="post" action="{% url 'desactivar_servicio' servicio.id_servicio %}">
+                                        {% csrf_token %}
+                                        <button class='btn' type="submit"><i class="fas fa-toggle-off"></i></button>
+                                    </form>
+                                    <a class="btn" href="{% url "modificar_servicio" servicio.id_servicio %}">
+                                        <i class="fas fa-edit"></i> 
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="card-text">{{ servicio.descripcion }}</p>
+                            <p class="card-text"><small class="text-muted">Precio: ${{ servicio.precio }}</small></p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-md-12">
+                    <p>Sin servicios publicados</p>
+                </div>    
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <div class="col-md-12">
+        <p></p>
+    </div>
+{% endif %}
+
+{% if servicios_desactivados %}
+    <div class="col-md-12">
+        <h2 class="text-center">Servicios desactivados:</h2>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for servicio in servicios_desactivados %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title">{{ servicio.tipo_servicio }}</h5>
+                                <div class="btn-group">
+                                    <form method="post" action="{% url 'activar_servicio' servicio.id_servicio %}">
+                                        {% csrf_token %}
+                                        <button class='btn' type="submit"><i class="fas fa-toggle-on"></i></button>
+                                    </form>
+                                    <a class="btn" href="{% url "modificar_servicio" servicio.id_servicio %}">
+                                        <i class="fas fa-edit"></i> 
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="card-text">{{ servicio.descripcion }}</p>
+                            <p class="card-text"><small class="text-muted">Precio: ${{ servicio.precio }}</small></p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-md-12">
+                    <p>Sin servicios publicados</p>
+                </div>    
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <div class="col-md-12">
+        <p></p>
+    </div>
+{% endif %}
+    
+
+{% if reseñas_cuidador %}
+<!-- Sección de Reseñas -->
+<div class="card-panel custom-card">
+    <h5>Reseñas:</h5>
+    <div class="divider"></div>
+
+    <ul class="collection">
+        {% for resena in reseñas_cuidador %}
+            <li class="collection-item avatar">
+                {% if resena.autor.imagen %}
+                    <img src="{{ resena.autor_imagen.url }}" class="circle responsive-img">
+                {% else %}
+                    <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                {% endif %}
+                <span style="font-weight: bold; font-size: 20px" class="title">{{ resena.autor.first_name }} {{ resena.autor.last_name }}</span>
+                <span class="title secondary-content">{{ resena.fecha_creacion }}</span>
+                <p>@{{ resena.autor_username }}</p>
+                <br>
+                {{ resena.texto }}
+                <br>
+                <strong>Calificación: {{ resena.calificacion }} Estrellas</strong>
+            </li>
+        {% empty %}
+            <div class="center-align">
+                <h5>Sin reseñas</h5>
+                <span>Sé el primero en dejar una reseña</span>
+            </div>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if reseñas_cuidador.has_other_pages %}
+    <div class="btn-group" role="group" aria-label="Item pagination">
+        {% if reseñas_cuidador.has_previous %}
+            <a href="?page=1" class="btn btn-outline-primary">&laquo;&laquo;</a>
+            <a href="?page={{ reseñas_cuidador.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+        {% endif %}
+
+        {% for page_number in reseñas_cuidador.paginator.page_range %}
+            {% if reseñas_cuidador.number == page_number %}
+                <button class="btn btn-outline active">
+                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                </button>
+            {% else %}
+                <a href="?page={{ page_number }}" class="btn">
+                    {{ page_number }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if reseñas_cuidador.has_next %}
+            <a href="?page={{ reseñas_cuidador.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+            <a href="?page={{ reseñas_cuidador.paginator.num_pages }}" class="btn btn-outline-primary">&raquo;&raquo;</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p></p>
+{% endif %}
+
+
+<script>
+$('#agregarMascotaModal').on('show.bs.modal', function (event) {
+    var modal = $(this);
+    modal.find('.modal-title').text('Agregar Mascota');
+    modal.find('.modal-body input').val('');
+});
+</script>
+
+<div class="modal fade" id="agregarMascotaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Mascota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'perfil' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form_mascota|crispy }}
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.dropdown-trigger');
+        var instances = M.Dropdown.init(elems, options);
+      });
+    </script>
+
+{% endblock %}

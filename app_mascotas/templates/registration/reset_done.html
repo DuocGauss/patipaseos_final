@@ -1,0 +1,32 @@
+{% extends 'app_mascotas/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+
+  <!------>
+
+  <div class="cont1">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            
+        </div>
+        <div class="col-sm-4">
+            <h2>Se acaba de enviar un correo con instrucciones de como cambiar su contraseña.</h2>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{form|crispy}}
+            </form>
+            
+        </div>
+        <div class="col-sm-4">
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock content %}

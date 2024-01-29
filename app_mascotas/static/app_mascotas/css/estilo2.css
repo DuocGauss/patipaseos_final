@@ -1,0 +1,423 @@
+
+
+header h1 {
+    margin: 0;
+}
+
+/* Estilos para la navegación */
+
+
+
+/* Estilos para el pie de página */
+
+
+
+/* Pie de pagina */
+
+footer {
+    text-align: center;
+    padding: 3px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    width: 100%;
+}
+
+
+
+
+
+
+  /* Estilos para el contenido de la página de inicio */
+.contenido-principal {
+    text-align: center; /* Centrar el contenido horizontalmente */
+    margin-top: 50px;   /* Espacio superior para centrar verticalmente */
+    position: relative;
+    min-height: 100vh;
+}
+#content-wrap {
+    padding-bottom: 2.5rem;    /* Footer height */
+  }
+
+.contenido-principal h2 {
+    font-size: 24px;    /* Tamaño de fuente del título h2 */
+}
+
+.contenido-principal p {
+    font-size: 16px;    /* Tamaño de fuente del párrafo p */
+}
+
+
+/* Anula el estilo de las listas no ordenadas */
+ul {
+    list-style: none; /* Elimina las viñetas */
+    padding-left: 0;  /* Elimina el espacio izquierdo predeterminado */
+}
+
+
+
+#panel-cliente ul li a{
+    color: white;
+    margin-top: 1px;
+    /* background-color: #e4e4e4; */
+    background-color:#000000; 
+
+}
+
+#panel-cliente ul li a:hover{
+    
+    background-color:  #d80707;
+    
+}
+
+
+
+/* CSS personalizado para ajustar el tamaño de las imágenes del carrusel */
+.custom-image-size {
+    max-width: 100%; /* Ajustar el ancho máximo de la imagen al tamaño del contenedor */
+    max-height: 600px; 
+    margin: 0 auto; /* Centrar la imagen horizontalmente en el contenedor */
+    display: block; /* Hacer que la imagen sea un elemento de bloque para centrarla */
+}
+
+.carousel {
+    margin-bottom: 40px; /* Ajusta el valor según la separación deseada entre el carrusel y el footer */
+}
+
+
+
+
+
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: rgb(214, 1, 1);
+    color: rgb(0, 0, 0);
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Dropdown button on hover & focus */
+  .dropbtn:hover, .dropbtn:focus {
+    background-color: #000000;
+  }
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
+
+
+
+
+
+  .my-custom-button {
+    background-color: red; /* Cambia el color de fondo a azul */
+    color: white; /* Cambia el color del texto a blanco */
+    border: none; /* Elimina el borde */
+    padding: 10px 20px; /* Ajusta el relleno */
+    /* Otros estilos personalizados según tus preferencias */
+    transition: background-color 0.3s;
+}
+
+.my-custom-button:hover {
+  background-color: red; /* Cambiar el color de fondo cuando el mouse está encima del botón */
+  color: white; /* Puedes ajustar el color del texto según tus preferencias */
+}
+
+
+.my-custom-delete-button {
+  background-color: #dc3545; /* Color de fondo para el botón de eliminar */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  /* Otros estilos personalizados según tus preferencias */
+
+  /* Cambiar el color de fondo cuando se pasa el mouse por el botón */
+  transition: background-color 0.3s; /* Agregar una transición suave */
+}
+
+.my-custom-delete-button:hover {
+  background-color: #c82333; /* Cambiar el color de fondo cuando el mouse está encima del botón de eliminar */
+  color: white; /* Puedes ajustar el color del texto según tus preferencias */
+}
+
+
+
+.card {
+  transition: transform 0.2s;  /* Agrega una transición en la propiedad "transform" */
+}
+
+.card:hover {
+  transform: scale(1.05);  /* Aumenta la escala de la tarjeta en un 5% cuando el mouse pasa sobre ella */
+}
+
+
+
+
+
+/* Color de fondo y texto para los elementos del menú */
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff; /* Color del texto */ /* Color de fondo */
+    transition: color 0.3s;
+}
+
+/* Color de fondo y texto para los elementos del menú al pasar el ratón */
+.navbar-nav .nav-item .nav-link:hover {
+    color: #000000; /* Color del texto al pasar el ratón */
+    text-decoration: none;
+}
+
+
+/* Estilos para la marca */
+.navbar-brand h1 {
+  color: #ffffff; /* Color del texto normal */
+  font-size: 1.5rem; /* Tamaño del texto */
+  font-weight: bold; /* Peso de la fuente */
+  transition: color 0.3s; /* Agregar transición para un cambio suave de color */
+  text-decoration: none; /* Elimina el subrayado del enlace */
+}
+
+/* Estilos para la marca al pasar el ratón */
+.navbar-brand:hover h1 {
+  color: #000000; /* Nuevo color del texto al pasar el ratón */
+}
+
+
+
+/* Agrega estas reglas CSS en tu archivo de estilos */
+.dropdown-item {
+  color: black; /* Color de texto predeterminado */
+}
+
+/* Cambia el color de texto cuando el mouse está sobre el elemento */
+.dropdown-item:hover {
+  color: red; /* Reemplaza tu_color_hover con el color deseado */
+}
+
+/* Cambia el color de texto cuando el elemento está activo (se hace clic en él) */
+.dropdown-item:active {
+  color: black; /* Reemplaza tu_color_active con el color deseado */
+}
+
+
+
+/* En tu archivo CSS */
+.c {
+  background-color: rgb(178, 29, 29);
+  color: rgb(255, 255, 255);
+}
+
+
+
+
+
+
+
+
+body {
+  background-color: #f9f9fa
+}
+
+.padding {
+  padding: 3rem !important
+}
+
+.user-card-full {
+  overflow: hidden;
+  min-height: 100%;
+}
+
+.card {
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+  box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+  border: none;
+  margin-bottom: 30px;
+}
+
+.m-r-0 {
+  margin-right: 0px;
+}
+
+.m-l-0 {
+  margin-left: 0px;
+}
+
+.user-card-full .user-profile {
+  border-radius: 5px 0 0 5px;
+  overflow: hidden;
+  height: auto;
+}
+
+.bg-c-lite-green {
+  background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
+  background: linear-gradient(to right, #ee5a6f, #f29263);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+}
+
+.bg-c-lite-green img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 50%;
+  width: auto;
+  height: auto;
+}
+
+.user-profile {
+  padding: 20px 0;
+}
+
+.card-block {
+  padding: 1.25rem;
+}
+
+.m-b-25 {
+  margin-bottom: 25px;
+}
+
+.img-radius {
+  border-radius: 5px;
+}
+
+
+
+h6 {
+  font-size: 14px;
+}
+
+.card .card-block p {
+  line-height: 25px;
+}
+
+@media only screen and (min-width: 1400px){
+p {
+  font-size: 14px;
+}
+}
+
+.card-block {
+  padding: 1.25rem;
+}
+
+.b-b-default {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.m-b-20 {
+  margin-bottom: 20px;
+}
+
+.p-b-5 {
+  padding-bottom: 5px !important;
+}
+
+.card .card-block p {
+  line-height: 25px;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.text-muted {
+  color: #919aa3 !important;
+}
+
+.b-b-default {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.f-w-600 {
+  font-weight: 600;
+}
+
+.m-b-20 {
+  margin-bottom: 20px;
+}
+
+.m-t-40 {
+  margin-top: 20px;
+}
+
+.p-b-5 {
+  padding-bottom: 5px !important;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.m-t-40 {
+  margin-top: 20px;
+}
+
+.user-card-full .social-link li {
+  display: inline-block;
+}
+
+.user-card-full .social-link li a {
+  font-size: 20px;
+  margin: 0 10px 0 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+
+
+.score-star {
+  color: rgba(250, 250, 1, 0.559);
+  font-size: 1.5em;
+}
+
+
+.custom-card {
+  width: 70%; /* Ajusta el ancho según tus necesidades */
+  margin: auto; /* Centra el card-panel */
+}
+
+
+
+
+.navbar-brand img {
+  transition: transform 0.3s; /* Agrega una transición suave de 0.3 segundos */
+}
+
+.navbar-brand img:hover {
+  transform: scale(1.2); /* Hace que la imagen sea un 20% más grande al pasar el ratón */
+}
+
+
+
+
+

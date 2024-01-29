@@ -1,0 +1,39 @@
+{% extends 'app_mascotas/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+ 
+  <!------>
+
+<!--Editar Producto  -->
+
+<div class="container" style="margin-top: 50px;">
+
+    <form class="form" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+        <h1 style="color: #8d8d8d;">Editar datos de la mascota</h1>
+    </div>
+    <form action="">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                   {{form|crispy}}
+                   
+                   {% if form %}
+                   <input type="submit" value="Modificar" class="btn btn-warning btn-lg text-white">
+                   {% endif %}
+       
+    </form>
+  </div>
+  
+ </div>
+ </div>
+ </div>
+
+ 
+
+{% endblock content %}

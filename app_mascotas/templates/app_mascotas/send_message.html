@@ -1,0 +1,7 @@
+<!-- En tu plantilla -->
+<form method="post" action="{% url 'send_message' username=recipient.username det_prestacion=det_prestacion.id %}">
+    {% csrf_token %}
+    <label for="body">Mensaje:</label>
+    <textarea name="body" required></textarea>
+    <input type="submit" value="Enviar">
+</form>

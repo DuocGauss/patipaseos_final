@@ -1,0 +1,69 @@
+{% extends "app_mascotas/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+        <div style="max-width: 600px;" class="card mx-auto"> <!-- mx-auto para centrar horizontalmente -->
+            <div class="card-content">
+
+                <div class="text-center"> <!-- text-center para centrar horizontalmente -->
+                    {% if directs.has_previous %}
+                        <a href="?messagespage={{ directs.previous_page_number }}" class="waves-effect waves-light btn-small">
+                            <i class="material-icons left">keyboard_arrow_left</i>Previo
+                        </a>
+                    {% endif %}
+                    <span class="current">Page {{ directs.number }} of {{ directs.paginator.num_pages }}.</span>
+                    {% if directs.has_next %}
+                        <a href="?messagespage={{ directs.next_page_number }}" class="waves-effect waves-light btn-small">
+                            Siguiente<i class="material-icons right">keyboard_arrow_right</i>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <ol id="oldirects" style="list-style-type: none; display: flex; flex-direction: column-reverse;" class="collection">
+                    {% for direct in directs %}
+                        <li style="border-bottom: 0px;" class="collection-item avatar">
+                            {% if direct.sender.imagen %}
+                                <img src="{{ direct.sender.imagen.url }}" class="circle responsive-img">
+                            {% else %}
+                                <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                            {% endif %}
+                            <span class="title"><b>{{ direct.sender.first_name }} {{ direct.sender.last_name }}</b></span>
+                            <p>{{ direct.body }}</p>
+                            <p class="right-align">{{ direct.date | naturaltime }}</p>
+                        </li>  
+                    {% endfor %}              
+                </ol>
+            </div>
+        </div>
+
+        <div class="card-action text-center"> <!-- text-center para centrar horizontalmente -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <form method="post" action="{% url 'send_message' username=active_direct det_prestacion=det_prestacion %}">
+                        {% csrf_token %}
+                        <div class="col-md-10"> <!-- Tamaño de la columna ajustado según tus necesidades -->
+                            <input type="hidden" name="to_user" value="{{ active_direct }}">
+                            <input type="hidden" name="det_prestacion" value="{{ det_prestacion }}">
+                            <div class="form-group">
+                                <label for="text">Responder:</label>
+                                <input id="text" name="body" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit" name="action">Enviar
+                                    <i class="material-icons right">send</i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+
+{% endblock %}

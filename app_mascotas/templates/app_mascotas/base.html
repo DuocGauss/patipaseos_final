@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="//cdn.bootcss.com/raty/2.7.1/jquery.raty.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/raty/2.7.1/jquery.raty.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static "app_mascotas/css/materialize.min.css" %}"  media="screen,projection"/>
+    
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- DateRangePicker -->
+    <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <title>{% block title %}Sitio Web{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'app_mascotas/css/estilo2.css' %}">
+
+</head>
+<body>
+    <header>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark light-blue" role="navigation">
+            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'app_mascotas/img/patipaseospng.png' %}" alt="Logo" style="max-width: 100px; max-height: 60px;">
+            </a>
+            <!-- Botón para pantallas pequeñas -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <!-- Menú de Navegación con Materialize -->
+            <div class="nav-wrapper">
+                <form method="get" action="{% url 'index' %}">
+                    <div class="input-field">
+                        <input id="search" type="search" name="q" placeholder="Buscar" aria-label="Buscar" required>
+                        <label class="label-icon" for="search">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <i class="material-icons">close</i>
+                    </div>
+                </form>
+            </div>
+
+                {% if user.is_authenticated %}
+                <ul class="right hide-on-med-and-down">
+                        <!-- Elementos de menú a la derecha -->
+                    {% if not user.es_cuidador %}
+                        <li >
+                            <a href="{% url "cuidador" %}">Convertirse en cuidador</a>
+                        </li>
+                    {% endif %}
+                    {% if user.es_cuidador %}
+                        <li><a href="{% url 'servicio' %}"><i class="material-icons left">add_box</i>Publicar servicio</a></li>
+
+                          <!-- Dropdown Trigger -->
+                        <li><a class='dropdown-trigger' href='#' data-target='dropdown1'>Solicitudes<i class="material-icons left">pets</i></a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a href="{% url "prestacion_cuidador" %}">Prestaciones de servicio</a></li>
+                            <li><a href="{% url "prestacion" %}">Solicitud de servicios</a></li>
+                        </ul></li>
+                    {% endif %}
+                    {% if not user.es_cuidador %}
+                        <li>
+                            <a href="{% url "prestacion" %}">Solicitudes<i class="material-icons left">pets</i></a>
+                        </li>
+                    {% endif %}
+                        <li><a href="{% url 'inbox' %}"><i class="material-icons left">message</i>Mensajes<span class="new badge">{{ message.unread }}</span></a></li>
+                        <li><a href="{% url "perfil" %}"><i class="material-icons left">person</i>Perfil</a></li>
+                        <li>
+                            <a href="#" onclick="confirmLogout()" ><i class="material-icons left">exit_to_app</i>Salir</a>
+                        </li>
+                        <!--<li><a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons left">person</i>boton</a></li> -->
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav ml-auto">
+                        <li>
+                            <a href="{% url "registro" %}">Registrarse</a>
+                        </li>
+                        <li >
+                            <a href="{% url "login_custom" %}">Iniciar sesión</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+        </nav>
+
+    </header>
+    <main class="contenido-principal">
+        <div id="content-wrap">
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+
+
+        <!-- Pie de página común -->
+         <!-- Footer -->
+         <footer class="page-footer orange">
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-12 text-white">
+                    <span class="social-links-txt mb-3">¡Síguenos!</span>
+                    <ul class="social-links">
+                        <li><a href="http://www.facebook.com/tu_pagina" class="text-white"><i class="fab fa-facebook"></i></a></li>
+                    </ul>
+                    <ul class="social-links">
+                        <li><a href="http://www.instagram.com/tu_pagina" class="text-white"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+            <div class="footer-copyright">
+              <div class="container">
+              PatiPaseos todos los derechos reservados 
+              </div>
+            </div>
+          </footer>
+        
+        
+          <!--  Scripts-->
+          <script src="{% static 'app_mascotas/js/materialize.js' %}"></script>
+          <script src="{% static 'app_mascotas/js/init.js' %}"></script>
+          {% block javascript %}
+          {% endblock %}
+ <!-- JavaScript para la confirmación de cierre de sesión -->
+ <script>
+    function confirmLogout() {
+        Swal.fire({
+            title: '¿Cerrar Sesión?',
+            text: '¿Estás seguro de que deseas cerrar sesión?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: 'Red'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'logout_custom' %}";
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        $('.dropdown-trigger').dropdown();
+    });
+    
+</script>
+</body>
+</html>
