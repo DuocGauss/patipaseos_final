@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>{% block title %}Sitio Web{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'app_mascotas/css/estilo2.css' %}">
+    <link rel="stylesheet" href="{% static 'app_mascotas/css/estilo.css' %}">
 
 </head>
 <body>
@@ -86,7 +86,13 @@
                         </li>
                     {% endif %}
                         <li><a href="{% url 'inbox' %}"><i class="material-icons left">message</i>Mensajes<span class="new badge">{{ message.unread }}</span></a></li>
-                        <li><a href="{% url "perfil" %}"><i class="material-icons left">person</i>Perfil</a></li>
+                        <li><a href="{% url "perfil" %}">
+                            {% if request.user.imagen %}
+                                <img src="{{ request.user.imagen.url }}" alt="User-Profile-Image" class="rounded-circle" style="width: 40px; height: 40px;"> 
+                            {% else %}
+                                <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="rounded-circle" alt="User-Profile-Image" style="width: 40px; height: 40px;">
+                            {% endif %}
+                            {{ request.user.username }}</a></li>
                         <li>
                             <a href="#" onclick="confirmLogout()" ><i class="material-icons left">exit_to_app</i>Salir</a>
                         </li>

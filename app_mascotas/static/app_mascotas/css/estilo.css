@@ -396,7 +396,7 @@ p {
 
 
 .score-star {
-  color: rgba(250, 250, 1, 0.559);
+  color: rgb(0, 0, 0);
   font-size: 1.5em;
 }
 
@@ -416,6 +416,7 @@ p {
 .navbar-brand img:hover {
   transform: scale(1.2); /* Hace que la imagen sea un 20% más grande al pasar el ratón */
 }
+
 
 
 

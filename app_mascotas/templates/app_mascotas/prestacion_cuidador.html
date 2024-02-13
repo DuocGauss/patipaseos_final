@@ -22,105 +22,185 @@
 
 {% block content %}
 
+<script>
+    function ConfirmarAceptarSolicitud(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: '¿Estás seguro de aceptar la solicitud de servicio?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'Green',
+            cancelButtonColor: 'Grey',
+            confirmButtonText: 'Sí, aceptar',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AceptarSolicitud(event.target.form);  // Llama a la función para aceptar la solicitud si el usuario confirma
+            }
+        });
+    }
 
+    function AceptarSolicitud(form) {
+        Swal.fire({
+            title: 'Aceptando la solicitud....',
+            allowOutsideClick: false,
+            showCancelButton: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading();
 
+                // Simula la aceptación de la solicitud (reemplaza esto con tu lógica real)
+                setTimeout(function () {
+                    // Ocultar el spinner cuando la aceptación está completa
+                    Swal.close();
+
+                    // Enviar el formulario directamente
+                    form.submit();
+                }, 2000);  // Simula un tiempo de espera de 2 segundos (reemplaza con tu lógica real)
+            },
+        });
+    }
+</script>
+
+<script>
+    function ConfirmarFinalizarServicio(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: '¿Estás seguro de finalizar el servicio?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'Green',
+            cancelButtonColor: 'Grey',
+            confirmButtonText: 'Sí, finalizar',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                FinalizarServicio(event.target.form);  // Llama a la función para finalizar el servicio si el usuario confirma
+            }
+        });
+    }
+
+    function FinalizarServicio(form) {
+        Swal.fire({
+            title: 'Finalizando la prestación....',
+            allowOutsideClick: false,
+            showCancelButton: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading();
+
+                // Simula la finalización del servicio (reemplaza esto con tu lógica real)
+                setTimeout(function () {
+                    // Ocultar el spinner cuando la finalización está completa
+                    Swal.close();
+
+                    // Enviar el formulario directamente
+                    form.submit();
+                }, 2000);  // Simula un tiempo de espera de 2 segundos (reemplaza con tu lógica real)
+            },
+        });
+    }
+</script>
+<div class="container">
+    <ul class="collection">
 <!-- Historial de prestaciones solicitadas por el cuidador -->
-{% if prestaciones_cuidador %}
-<h2>Historial de Servicios</h2>
-    {% for prestacion in prestaciones_cuidador %}
-        <div class="card mb-3">
-            <div class="card-header">
-                <p class="card-text">Fecha de inicio: {{ prestacion.fecha_prestacion }}</p>
-            </div>
-            <div class="card-body d-flex align-items-start">
-                <div class="rounded-circle-container me-3 position-relative">
-                <div class="rounded-circle overflow-hidden me-3" style="width: 100px; height: 100px;">
-                    {% with propietario=prestacion.id_propietario %}
-                        {% if propietario.imagen %}
-                        <a href="{% url 'conversation' username=prestacion.id_propietario.username det_prestacion=prestacion.id %}" title="Haz clic para iniciar una conversación">
-                            <img src="{{ propietario.imagen.url }}" class="rounded-circle" alt="Foto del Cliente" style="width: 100px; height: 100px;">
-                        </a>
-                        {% else %}
-                            <!-- Puedes agregar una imagen predeterminada si el cliente no tiene una foto -->
-                            <a href="{% url 'conversation' username=prestacion.id_propietario.username det_prestacion=prestacion.id %}" title="Haz clic para iniciar una conversación">
-                            <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="rounded-circle" alt="Foto del Cliente" style="width: 100px; height: 100px;">
-                            </a>
-                        {% endif %}
-                    {% endwith %}
+    {% if prestaciones_cuidador %}
+    <h2>Historial de Servicios</h2>
+        {% for prestacion in prestaciones_cuidador %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <p class="card-text">Fecha de inicio: {{ prestacion.fecha_prestacion }}</p>
                 </div>
-                <div class="card overlay-card position-absolute bottom-0 start-0">
-                    <div class="card-body">
-                        <a href="{% url 'conversation' username=prestacion.id_propietario.username det_prestacion=prestacion.id %}" class="btn btn-primary"><i class="material-icons">message</i>
-                        </a>
+                <div class="card-body d-flex align-items-start">
+                    <div class="rounded-circle-container me-3 position-relative">
+                    <div class="rounded-circle overflow-hidden me-3" style="width: 100px; height: 100px;">
+                        {% with propietario=prestacion.id_propietario %}
+                            {% if propietario.imagen %}
+                            <a href="{% url 'cuenta' username=prestacion.id_propietario.username %}" title="Haz clic para iniciar una conversación">
+                                <img src="{{ propietario.imagen.url }}" class="rounded-circle" alt="Foto del Cliente" style="width: 100px; height: 100px;">
+                            </a>
+                            {% else %}
+                                <!-- Puedes agregar una imagen predeterminada si el cliente no tiene una foto -->
+                                <a href="{% url 'cuenta' username=prestacion.id_propietario.username %}" title="Haz clic para iniciar una conversación">
+                                <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="rounded-circle" alt="Foto del Cliente" style="width: 100px; height: 100px;">
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div class="card overlay-card position-absolute bottom-0 start-0">
+                        <div class="card-body">
+                            <a href="{% url 'conversation' username=prestacion.id_propietario.username det_prestacion=prestacion.id %}" class="btn btn-primary"><i class="material-icons">message</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                    <div class="mx-auto text-center">
+                        <p class="card-text">Valor total: {{ prestacion.valor_total }}</p>
+                        <p class="card-text">Estado: {{ prestacion.estado }}</p>
+                        <p class="card-text">Servicio: {{ prestacion.id_servicio }}</p>
+                        <p class="card-text">Cliente: {{ prestacion.id_propietario }}</p>
+                        <br>
+                        {% if prestacion.estado == 'Pendiente' %}
+                            <!-- Si la prestación está pendiente, muestra un botón para cambiar el estado -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ prestacion.id }}">
+                                <button type="submit" class="btn btn-primary" onclick="ConfirmarAceptarSolicitud(event)">Aceptar solicitud del servicio</button>
+                            </form>
+                        {% endif %}
+                        {% if prestacion.estado == 'Activo' %}
+                            <!-- Si la prestación está activa, muestra un botón para cambiar el estado -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ prestacion.id }}">
+                                <button type="submit" class="btn btn-primary" onclick="ConfirmarFinalizarServicio(event)">Finalizar servicio</button>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-                <div class="mx-auto text-center">
-                    <p class="card-text">Valor total: {{ prestacion.valor_total }}</p>
-                    <p class="card-text">Estado: {{ prestacion.estado }}</p>
-                    <p class="card-text">Servicio: {{ prestacion.id_servicio }}</p>
-                    <p class="card-text">Cliente: {{ prestacion.id_propietario }}</p>
-                    <br>
-                    {% if prestacion.estado == 'Pendiente' %}
-                        <!-- Si la prestación está pendiente, muestra un botón para cambiar el estado -->
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ prestacion.id }}">
-                            <button type="submit" class="btn btn-primary">Aceptar solicitud del servicio</button>
-                        </form>
-                    {% endif %}
-                    {% if prestacion.estado == 'Activo' %}
-                        <!-- Si la prestación está activa, muestra un botón para cambiar el estado -->
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ prestacion.id }}">
-                            <button type="submit" class="btn btn-primary">Finalizar servicio</button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <hr>
-    {% endfor %}
-{% else %}
-<div class="center-align">
-    <br><br><br><br><br>
-    <i class="material-icons large">pets</i>
-    <h3>Sin Solicitudes</h3>
-    <h5>Tu historial esta vacio</h5>
-    <br><br><br><br><br>
-</div>
-{% endif %}
-
-
-{% if prestaciones_cuidador.has_other_pages %}
-    <div class="btn-group" role="group" aria-label="Item pagination">
-        {% if prestaciones_cuidador.has_previous %}
-            <a href="?page=1" class="btn btn-outline-primary">&laquo;&laquo;</a>
-            <a href="?page={{ prestaciones_cuidador.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
-        {% endif %}
-
-        {% for page_number in prestaciones_cuidador.paginator.page_range %}
-            {% if prestaciones_cuidador.number == page_number %}
-                <button class="btn btn-outline active">
-                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
-                </button>
-            {% else %}
-                <a href="?page={{ page_number }}" class="btn">
-                    {{ page_number }}
-                </a>
-            {% endif %}
+            <hr>
         {% endfor %}
-
-        {% if prestaciones_cuidador.has_next %}
-            <a href="?page={{ prestaciones_cuidador.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
-            <a href="?page={{ prestaciones_cuidador.paginator.num_pages }}" class="btn btn-outline-primary">&raquo;&raquo;</a>
-        {% endif %}
+    {% else %}
+    <div class="center-align">
+        <br><br><br><br><br>
+        <i class="material-icons large">pets</i>
+        <h3>Sin Solicitudes</h3>
+        <h5>Tu historial esta vacio</h5>
+        <br><br><br><br><br>
     </div>
-{% else %}
-    <p></p>
-{% endif %}
+    {% endif %}
 
+
+    {% if prestaciones_cuidador.has_other_pages %}
+        <div class="btn-group" role="group" aria-label="Item pagination">
+            {% if prestaciones_cuidador.has_previous %}
+                <a href="?page=1" class="btn btn-outline-primary">&laquo;&laquo;</a>
+                <a href="?page={{ prestaciones_cuidador.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+            {% endif %}
+
+            {% for page_number in prestaciones_cuidador.paginator.page_range %}
+                {% if prestaciones_cuidador.number == page_number %}
+                    <button class="btn btn-outline active">
+                        <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                    </button>
+                {% else %}
+                    <a href="?page={{ page_number }}" class="btn">
+                        {{ page_number }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if prestaciones_cuidador.has_next %}
+                <a href="?page={{ prestaciones_cuidador.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+                <a href="?page={{ prestaciones_cuidador.paginator.num_pages }}" class="btn btn-outline-primary">&raquo;&raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p></p>
+    {% endif %}
+    </ul>
+</div>
 
 
 

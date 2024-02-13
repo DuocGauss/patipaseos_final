@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'patipaseos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'patipaseos_bd',
+        'NAME': 'patipaseos_bd1',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

@@ -8,18 +8,22 @@
 <div class="container">
     <ul class="collection">
             {% for message in messages %}
-                <a href="{% url 'conversation' message.user.username message.det_prestacion %}">
                     <li class="collection-item avatar">
                         {% if message.user.imagen %}
+                            <a href="{% url 'cuenta' username=message.user.username %}">
                             <img src="{{ message.user.imagen.url }}" class="circle responsive-img">
+                            </a>
                         {% else %}
+                            <a href="{% url 'cuenta' username=message.user.username %}">
                             <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                            </a>
                         {% endif %}
+                        <a href="{% url 'conversation' message.user.username message.det_prestacion %}">
                         <span class="title">{{ message.user.first_name }} {{ message.user.last_name }}</span>
                         <p><b>@{{ message.user.username }} {{ message.det_prestacion}}</b></p>
                         <span class="new badge">{{ message.unread }}</span>
+                        </a>
                     </li>
-                </a>
         
         
         {% empty %}
@@ -31,9 +35,37 @@
                 <br><br><br><br><br>
             </div>
         {% endfor %}
+    
+
+{% if messages.has_other_pages %}
+    <div class="btn-group" role="group" aria-label="Item pagination">
+        {% if messages.has_previous %}
+            <a href="?page=1" class="btn btn-outline-primary">&laquo;&laquo;</a>
+            <a href="?page={{ messages.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+        {% endif %}
+
+        {% for page_number in messages.paginator.page_range %}
+            {% if messages.number == page_number %}
+                <button class="btn btn-outline active">
+                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                </button>
+            {% else %}
+                <a href="?page={{ page_number }}" class="btn">
+                    {{ page_number }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if messages.has_next %}
+            <a href="?page={{ messages.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+            <a href="?page={{ messages.paginator.num_pages }}" class="btn btn-outline-primary">&raquo;&raquo;</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p></p>
+{% endif %}
+
     </ul>
 </div>
-
-
 
 {% endblock %}

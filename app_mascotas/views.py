@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.db import connection
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -148,7 +149,7 @@ def perfil(request):
             context["servicios_desactivados"] = servicios_desactivados
             context["cuidador_data"] = cuidador_data
             # Obtener reseñas asociadas al cuidador
-            reseñas_cuidador = obtener_resenas_por_propietario_cuidador(request.user.id)
+            reseñas_cuidador = Resena.objects.filter(cuidador=cuidador_data).order_by('-fecha_creacion')
             # Paginación para las reseñas
             paginator = Paginator(reseñas_cuidador, 3)
             page_number = request.GET.get('page')
@@ -310,50 +311,57 @@ def raza(request):
     return render(request,"app_mascotas/raza.html",contexto)
 
 
-def perfil_servicio(request, id_servicio):
-    servicio = get_object_or_404(Servicio, id_servicio=id_servicio)
-    cuidador = servicio.cuidador
+def perfil_servicio(request, cuidador_username):
+    cuidador = get_object_or_404(Cuidador, propietario__username=cuidador_username)
+    servicios = Servicio.objects.filter(cuidador=cuidador)
     propietario = cuidador.propietario
     prestaciones_activas = None
-    if request.user.is_authenticated:
-        user_id = request.user.id
-        prestaciones_activas = DetPrestacion.objects.filter(id_servicio=servicio, estado__in=['Activo', 'Finalizado'], id_propietario=user_id)
-    else:
-        prestaciones_activas = DetPrestacion.objects.filter(id_servicio=servicio, estado__in=['Activo', 'Finalizado'])
+    
+    user_id = request.user.id
+    prestaciones_activas = DetPrestacion.objects.filter(id_servicio__in=servicios, estado__in=['Activo', 'Finalizado'], id_propietario=user_id)
+
+        
     obtener = obtener_servicios_activos(propietario.id) if propietario else []
     destinatario = Propietario.objects.exclude(pk=request.user.id)
-    todas_mascotas_usuario = Mascota.objects.filter(propietario=propietario)
     mascotas_activas = obtener_mascotas_activas(propietario.id) if propietario else []
     user = request.user
     resenas = Resena.objects.filter(cuidador=cuidador).order_by('-fecha_creacion')
-    has_left_review = False
-    if prestaciones_activas.filter(estado__in=['Activo', 'Finalizado']).exists():
+    reseña_existente = None
+    
+    if prestaciones_activas.exists():
         if request.method == 'POST':
-            # Procesa el formulario de reseñas aquí y actualiza el cuidador
             form = frmResena(request.POST)
             if form.is_valid():
-                # Verifica si el usuario ya ha dejado una reseña para este cuidador
                 if Resena.objects.filter(cuidador=cuidador, autor=user).exists():
-                    has_left_review = True
+                    reseña_existente = Resena.objects.get(cuidador=cuidador, autor=user)
+                    reseña_existente.texto = form.cleaned_data['texto']
+                    reseña_existente.calificacion = form.cleaned_data['calificacion']
+                    reseña_existente.fecha_creacion = timezone.now()
+                    reseña_existente.fue_editada = True
+                    reseña_existente.save()
+                    messages.success(request, "Reseña actualizada exitosamente.")
+                    return redirect('perfil_servicio', cuidador_username=cuidador_username)
                 else:
-                    resena = form.save(commit=False)
-                    resena.cuidador = cuidador
-                    resena.autor = request.user
-                    resena.save()
+                    nueva_reseña = form.save(commit=False)
+                    nueva_reseña.cuidador = cuidador
+                    nueva_reseña.autor = request.user
+                    nueva_reseña.save()
                     messages.success(request,"Comentario Agregado!")
-                    has_left_review = False
+                    return redirect('perfil_servicio', cuidador_username=cuidador_username)
 
         else:
             form = frmResena()
+            if Resena.objects.filter(cuidador=cuidador, autor=user).exists():
+                reseña_existente = Resena.objects.get(cuidador=cuidador, autor=user)
     else:
-        # Mostrar un mensaje que indica que la prestación debe completarse para dejar una reseña
         form = None
-    # Paginación para las reseñas
+    
     paginator = Paginator(resenas, 3)
     page_number = request.GET.get('page')
     reseñas_paginadas = paginator.get_page(page_number)
+    
     contexto = {
-        'servicio': servicio,
+        'servicios': servicios,
         'cuidador': cuidador,
         'propietario': propietario,
         'obtener': obtener,
@@ -362,9 +370,73 @@ def perfil_servicio(request, id_servicio):
         'user': user,
         'resenas': reseñas_paginadas,
         'form': form,
-        'has_left_review': has_left_review,
+        'reseña_existente': reseña_existente,
     }
+    
     return render(request, 'app_mascotas/perfil_servicio.html', contexto)
+
+
+def cuenta(request, username):
+    usuario = get_object_or_404(Propietario, username=username)
+    cuidador = None
+    if usuario.es_cuidador:
+        cuidador = Cuidador.objects.get(propietario=usuario)
+        servicios = Servicio.objects.filter(cuidador=cuidador)
+        servicios_activos = servicios.filter(es_activo=True)
+    else:
+        cuidador = None
+        servicios_activos = None
+    mascotas_activas = obtener_mascotas_activas(usuario.id) if usuario else []
+    servicios = Servicio.objects.filter(cuidador__propietario=usuario)
+    reseñas = Resena.objects.filter(cuidador__propietario=usuario).order_by('-fecha_creacion')
+    paginator = Paginator(reseñas, 3)
+    page_number = request.GET.get('page')
+    reseñas_paginadas = paginator.get_page(page_number)
+    user = request.user
+    prestaciones_activas = None
+    reseña_existente = None
+    user_id = request.user.id
+    prestaciones_activas = DetPrestacion.objects.filter(id_servicio__in=servicios, estado__in=['Activo', 'Finalizado'], id_propietario=user_id)
+    if prestaciones_activas.exists():
+        if request.method == 'POST':
+            form = frmResena(request.POST)
+            if form.is_valid():
+                if Resena.objects.filter(cuidador=cuidador, autor=user).exists():
+                    reseña_existente = Resena.objects.get(cuidador=cuidador, autor=user)
+                    reseña_existente.texto = form.cleaned_data['texto']
+                    reseña_existente.calificacion = form.cleaned_data['calificacion']
+                    reseña_existente.fecha_creacion = timezone.now()
+                    reseña_existente.fue_editada = True
+                    reseña_existente.save()
+                    messages.success(request, "Reseña actualizada exitosamente.")
+                    return redirect('cuenta', username=username)
+                else:
+                    nueva_reseña = form.save(commit=False)
+                    nueva_reseña.cuidador = cuidador
+                    nueva_reseña.autor = request.user
+                    nueva_reseña.save()
+                    messages.success(request,"Comentario Agregado!")
+                    return redirect('cuenta', username=username)
+
+        else:
+            form = frmResena()
+            if Resena.objects.filter(cuidador=cuidador, autor=user).exists():
+                reseña_existente = Resena.objects.get(cuidador=cuidador, autor=user)
+    else:
+        form = None
+    
+    contexto = {
+        'usuario': usuario,
+        'mascotas_activas': mascotas_activas,
+        'servicios': servicios_activos,
+        'reseñas': reseñas_paginadas,
+        'cuidador': cuidador,
+        'form': form,
+        'reseña_existente': reseña_existente,
+        # Otros datos relevantes del usuario
+    }
+
+    return render(request, 'app_mascotas/cuenta.html', contexto)
 
 @login_required
 def eliminar_resena(request, id):
@@ -480,7 +552,7 @@ def detalle_prestacion(request, id_servicio):
                 form.instance.id_cuidador = servicio.cuidador
                 detalle_prestacion.save()
                 messages.success(request, "Servicio solicitado!")
-                return redirect("prestacion")
+                return redirect(to="prestacion")
         else:
             form = frmDetPrestacion(user, servicio.precio)
 
@@ -527,9 +599,10 @@ def prestacion(request):
             # Cambiar el estado de la prestación a 'Cancelado'
             prestacion.estado = 'Cancelado'
             prestacion.save()
-
             # Actualizar la lista de prestaciones después de la cancelación
             prestaciones_cliente = paginator.page(page)
+            # Redirigir de vuelta a la página de prestación para que se reflejen los cambios
+            return redirect('prestacion')
 
     return render(request, 'app_mascotas/prestacion.html', {'prestaciones_cliente': prestaciones_cliente})
 
@@ -583,9 +656,12 @@ def inbox(request):
     user = request.user
     messages = Mensaje.get_messages(user)
     recipients = Propietario.objects.exclude(pk=request.user.id)
+    paginator = Paginator(messages, 8)
+    page_number = request.GET.get('page')
+    mensajes_paginadas = paginator.get_page(page_number)
     
     contexto = {
-        'messages': messages,
+        'messages': mensajes_paginadas,
         'recipients': recipients
     }
     return render(request, 'app_mascotas/inbox.html', contexto)

@@ -108,6 +108,20 @@
         }
         </script>
 
+        <script>
+            function cambiarEstadoUsuario() {
+                Swal.fire({
+                    title: 'Cambiando estado del usuario...',
+                    allowOutsideClick: false,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+            }
+        </script>
+
 <div class="page-content page-container" id="page-content">
     <div class="padding">
         <div class="row container d-flex justify-content-center">
@@ -142,7 +156,7 @@
                                     <input type="hidden" name="cambiar_disponibilidad" value="1">
                                     <br>
                                     <p class="m-b-10 f-w-600">{{ cuidador_data.disponibilidad }}</p>
-                                    <button type="submit" class="btn btn-primary">Cambiar</button>
+                                    <button type="submit" class="btn btn-primary" onclick="cambiarEstadoUsuario()">Cambiar</button>
                                 </form>
                                 {% endif %}
                             </div>
@@ -367,17 +381,17 @@
         {% for resena in reseñas_cuidador %}
             <li class="collection-item avatar">
                 {% if resena.autor.imagen %}
-                    <img src="{{ resena.autor_imagen.url }}" class="circle responsive-img">
+                    <img src="{{ resena.autor.imagen.url }}" class="circle responsive-img">
                 {% else %}
                     <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
                 {% endif %}
                 <span style="font-weight: bold; font-size: 20px" class="title">{{ resena.autor.first_name }} {{ resena.autor.last_name }}</span>
                 <span class="title secondary-content">{{ resena.fecha_creacion }}</span>
-                <p>@{{ resena.autor_username }}</p>
+                <p>@{{ resena.autor.username }}</p>
                 <br>
+                <div id="stars_{{ forloop.counter }}" data-score="{{ resena.calificacion }}"></div>
+                <span id="calificacion_{{ forloop.counter }}"></span>
                 {{ resena.texto }}
-                <br>
-                <strong>Calificación: {{ resena.calificacion }} Estrellas</strong>
             </li>
         {% empty %}
             <div class="center-align">
@@ -449,6 +463,19 @@ $('#agregarMascotaModal').on('show.bs.modal', function (event) {
  
 
 </div>
+
+<script>
+    // Inicializa Raty para cada elemento con el ID stars_{counter}
+    {% for resena in reseñas_cuidador %}
+        $('#stars_{{ forloop.counter }}').raty({
+            score: function() {
+                return $(this).attr('data-score');
+            },
+            readOnly: true, // Solo lectura
+            starType: 'i'
+        });
+    {% endfor %}
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

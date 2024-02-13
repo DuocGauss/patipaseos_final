@@ -28,10 +28,15 @@
                 <ol id="oldirects" style="list-style-type: none; display: flex; flex-direction: column-reverse;" class="collection">
                     {% for direct in directs %}
                         <li style="border-bottom: 0px;" class="collection-item avatar">
+                            
                             {% if direct.sender.imagen %}
+                                <a href="{% url 'cuenta' username=direct.sender.username %}">
                                 <img src="{{ direct.sender.imagen.url }}" class="circle responsive-img">
+                                </a>
                             {% else %}
+                                <a href="{% url 'cuenta' username=direct.sender.username %}">
                                 <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                                </a>
                             {% endif %}
                             <span class="title"><b>{{ direct.sender.first_name }} {{ direct.sender.last_name }}</b></span>
                             <p>{{ direct.body }}</p>

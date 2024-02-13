@@ -19,7 +19,8 @@
 {% endif %}
 
   
-<div class="col-md-12">
+<div class="container">
+    <ul class="collection">
     <h5><strong>Publicación de servicios</strong></h5>
 
     {% if not obtener %}
@@ -48,7 +49,7 @@
                 {% if servicio.cuidador.propietario == user %}
                     <a href="{% url 'perfil' %}" class="btn btn-lg btn-primary">Ver Detalles</a>
                 {% else %}
-                    <a href="{% url 'perfil_servicio' servicio.id_servicio %}" class="btn btn-lg btn-primary">Ver Detalles</a>
+                    <a href="{% url 'perfil_servicio' servicio.cuidador.propietario.username %}" class="btn btn-lg btn-primary">Ver Detalles</a>
                 {% endif %}
                 <p class="card-text">Publicado por: {{ servicio.cuidador.propietario.username }}</p>
             </div>
@@ -85,7 +86,8 @@
     <p></p>
 {% endif %}
 
-      
+    </ul>
+</div>     
         
 <div class="container mt-5 text-center">
     <!-- Título animado -->

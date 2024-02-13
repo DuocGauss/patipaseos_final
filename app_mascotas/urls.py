@@ -14,7 +14,7 @@ urlpatterns = [
     path('perfil/', views.perfil, name='perfil'),
     path('editar_perfil/<int:id>',views.editar_perfil, name='editar_perfil'),
     path('servicio/',views.servicio,name="servicio"),
-    path('perfil_servicio/<int:id_servicio>/', views.perfil_servicio, name='perfil_servicio'),
+    path('perfil_servicio/<cuidador_username>/', views.perfil_servicio, name='perfil_servicio'),
     path('eliminar_servicio/<int:id>',views.eliminar_servicio,name="eliminar_servicio"),
     path('mod_servicio/<int:id_servicio>',views.modificar_servicio,name="modificar_servicio"),
     path('eliminar_mascota/<int:id>',views.eliminar_mascota,name="eliminar_mascota"),
@@ -34,4 +34,5 @@ urlpatterns = [
     path('desactivar_mascota/<int:id_mascota>/', views.desactivar_mascota, name='desactivar_mascota'),
     path('activar_servicio/<int:id_servicio>/', views.activar_servicio, name='activar_servicio'),
     path('desactivar_servicio/<int:id_servicio>/', views.desactivar_servicio, name='desactivar_servicio'),
+    path('cuenta/<username>/', views.cuenta, name='cuenta')
 ]

@@ -185,6 +185,7 @@ class Resena(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fue_editada = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.fecha_creacion} - {self.autor} - {self.calificacion}"
