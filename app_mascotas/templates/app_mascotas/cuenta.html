@@ -157,7 +157,7 @@
                     </a>
                 {% else %}
                     <a href="{% url 'cuenta' username=resena.autor.username %}">
-                    <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                    <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="circle responsive-img">
                     </a>
                 {% endif %}
                 <span style="font-weight: bold; font-size: 20px" class="title">{{ resena.autor.first_name }} {{ resena.autor.last_name }}</span>

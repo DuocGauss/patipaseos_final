@@ -15,7 +15,7 @@
                             </a>
                         {% else %}
                             <a href="{% url 'cuenta' username=message.user.username %}">
-                            <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                            <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="circle responsive-img">
                             </a>
                         {% endif %}
                         <a href="{% url 'conversation' message.user.username message.det_prestacion %}">

@@ -35,7 +35,7 @@
                                 </a>
                             {% else %}
                                 <a href="{% url 'cuenta' username=direct.sender.username %}">
-                                <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                                <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="circle responsive-img">
                                 </a>
                             {% endif %}
                             <span class="title"><b>{{ direct.sender.first_name }} {{ direct.sender.last_name }}</b></span>

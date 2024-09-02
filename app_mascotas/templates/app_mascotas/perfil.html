@@ -383,7 +383,7 @@
                 {% if resena.autor.imagen %}
                     <img src="{{ resena.autor.imagen.url }}" class="circle responsive-img">
                 {% else %}
-                    <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">
+                    <img src="{% static 'app_mascotas/img/no_avatar.jpg' %}" class="circle responsive-img">
                 {% endif %}
                 <span style="font-weight: bold; font-size: 20px" class="title">{{ resena.autor.first_name }} {{ resena.autor.last_name }}</span>
                 <span class="title secondary-content">{{ resena.fecha_creacion }}</span>
